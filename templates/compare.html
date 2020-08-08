@@ -1,0 +1,46 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Admin
+{% endblock %}
+
+{% block main %}
+<div>
+    <h3 class="text-center">
+        Select options from history to compare <br>
+        <small class="text-muted"> You must have viewed at least one neighborhood to use this tool. </small>
+    </h3>
+</div>
+<br><br>
+<div class="container">
+    <div class="row justify-content-md-center">
+        <div class="col">
+            <form id="multiplot" action="/compare" method="post">
+            <h5>Neighborhoods:</h5> <br>
+            {% for neighborhood in history_plots %}
+            <div class="form-check">
+                <input name="neighborhood" class="form-check-input" type="checkbox" value="{{ neighborhood }}" id="{{ neighborhood }}">
+                <label class="form-check-label" for="{{ neighborhood }}">
+                    {{ neighborhood }}
+                </label>
+            </div>
+            {% endfor %}
+            <br>
+            {% if history_plots %}
+            <button type="submit" class="btn btn-primary">Submit</button>
+            {% else %}
+            <h6 class="text-muted">Please select one or more neighborhoods from the home page</h6>
+            {% endif %}
+            </form>
+        </div>
+        <div class="col-md-auto">
+            {% if current_plot != None %}
+            <img src="data:image/png;base64,{{ current_plot }}" alt="current plot">
+            {% else %}
+            <img src="https://memegen.link/_bm9pZGVhCV8vY2hvb3NlX3NvbWVfbmVpZ2hib3Job29kcyEJ.jpg" alt="choose data">
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}

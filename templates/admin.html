@@ -1,0 +1,33 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Admin
+{% endblock %}
+
+{% block main %}
+
+<div id="success" class="alert alert-success alert-dismissible fade show" role="alert">
+    <h4 class="alert-heading">Database reset!</h4>
+    <p>You've reset the database of houses</p>
+    <hr>
+    <p class="mb-0">You know, just in case you fucked up.</p>
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+
+<div>
+    <h3 class="text-center">
+        Resetting the database re-reads the ZHVI data into the database for use in plotting <br>
+        <small class="text-muted"> Clean up your data! </small>
+    </h3>
+</div>
+<br>
+<div>
+    <input name="reset" id="reset" type="submit" class="btn btn-primary btn-lg btn-block" value="Reset Database">
+</div>
+
+
+
+
+{% endblock %}

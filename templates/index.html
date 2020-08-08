@@ -1,0 +1,54 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Find a Neighborhood
+{% endblock %}
+
+{% block main %}
+<div>
+    <h3 class="text-center">
+        This site is a way to navigate neighborhoods around the US and plot the home values based on public records of sales. <br>
+        <small class="text-muted"> Data gathered from: Zillow Home Value Index (ZHVI)</small>
+    </h3>
+</div>
+<br>
+<div id="location_form" class="form-group">
+    <form  action="/" method="post">
+
+        <select name="state" id="state" class="form-control btn btn-secondary dropdown-toggle"
+            id="exampleFormControlSelect1">
+            <option disabled {% if not State %} selected {% endif %}>State</option>
+            {% for state in states %}
+            <option {% if State == state[0] %} selected {% endif %}>{{ state[0] }}</option>
+            {% endfor %}
+        </select>
+        <select name="metro" id="metro" class="form-control btn btn-secondary dropdown-toggle"
+            id="exampleFormControlSelect1">
+            <option disabled {% if not metro %} selected {% endif %}>Metro-Area</option>
+            {% for metro in metros %}
+            <option {% if Metro == metro[0] %} selected {% endif %}>{{ metro[0] }}</option>
+            {% endfor %}
+        </select>
+
+    </form>
+    <br>
+    <form action="/plot" method="get">
+        <select name="neighborhood" id="neighborhood" class="form-control btn btn-secondary dropdown-toggle"
+            id="exampleFormControlSelect1">
+            <option disabled selected>Neighborhood</option>
+            {% for neighborhood in neighborhoods %}
+            <option>{{ neighborhood[0] }}</option>
+            {% endfor %}
+            <input type="hidden" name="Metro" value="{{ Metro }}"/>
+        </select>
+    </form>
+</div>
+<br>
+<br><br><br>
+<div>
+    <h3 class="text-center">
+        <small class="text-muted">Once a plot has been generated, it will show up in history and compare</small>
+    </h3>
+</div>
+
+{% endblock %}

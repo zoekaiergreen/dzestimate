@@ -1,0 +1,13 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Find a Neighborhood
+{% endblock %}
+
+{% block main %}
+
+{% if result != None %}
+<img src="data:image/png;base64,{{ result }}" alt="current plot">
+{% endif %}
+
+{% endblock %}
