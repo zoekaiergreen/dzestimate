@@ -349,7 +349,7 @@ def compare():
         plt.title("Comparison chart") 
 
         #legend
-        plt.legend(loc="best")
+        plt.legend(bbox_to_anchor=(0, 0, 1, 1), bbox_transform=plt.gcf().transFigure, shadow=True)
 
         #layout plot
         plt.tight_layout()
@@ -373,8 +373,7 @@ def coronavirus():
         covid_bool = False
         locations = request.form.getlist("neighborhood")
         counties = []
-        y_values = {}
-        x_values = {}
+        zillow_data = {} # (county, state) -> [(neighborhood, xs, ys)]
         for item in locations:
             location = item.split(', ')
             neighborhood = location[0]
@@ -395,9 +394,14 @@ def coronavirus():
             c.execute("""SELECT DISTINCT County FROM neighborhoods
                 WHERE RegionName = :neighborhood AND State = :state""",
                 {"neighborhood":neighborhood, "state":state })
-            county = c.fetchall()[0][0]
+            county_results = c.fetchall()
+            print("county_results: ", county_results)
+            county = county_results[0][0]
+
+            key = (county, state)
+
             conn.commit()
-            counties.append([county, state])
+            counties.append(key)
             #get ys
             for data in prices:
                 try:
@@ -405,43 +409,41 @@ def coronavirus():
                     dates.append(data[0])
                 except ValueError:
                     pass
-            
-            #append ys to data for use in plots
-            y_values[item] = y
 
             #get xs
             x = [datetime.datetime.strptime(d,"%Y-%m-%d").date() for d in dates]
 
-            #appendxs to data for use in plots
-            x_values[item] = x
+            if key not in zillow_data:
+                zillow_data[key] = []
+            zillow_data[key].append((neighborhood, x, y))
         
         matplotlib.use('agg')
         plt.figure()
 
-        ax = plt.gca()
+        _, ax = plt.subplots()
+
+        # instantiate a second axes that shares the same x-axis
+        ax2 = ax.twinx() 
+
         formatter = mdates.DateFormatter("%Y-%m-%d")
         ax.xaxis.set_major_formatter(formatter)
 
-        ay = plt.gca()
+        #ay = plt.gca()
         formattery = ticker.FormatStrFormatter('$%1.2f')
-        ay.yaxis.set_major_formatter(formattery)
+        ax.yaxis.set_major_formatter(formattery)
         
-        plt.xticks(rotation=45)
+
+
         # https://stackoverflow.com/questions/6682784/reducing-number-of-plot-ticks
         ax.xaxis.set_major_locator(plt.MaxNLocator(10))
         ax.yaxis.set_major_locator(plt.MaxNLocator(10))
 
-        # plotting the points
-        for item in locations:
-            x = x_values[item]
-            y = y_values[item]
-            print(item)
-            plt.plot(x, y, label=item)
-        print(counties)
+
+
+        ax2.set_ylabel('Cases')
+        ax2.yaxis.set_major_locator(plt.MaxNLocator(10))
+
         for item in counties:
-            print(item)
-            print(item[0])
-            print(item[1])
             y = []
             dates = []
             c = conn.cursor()
@@ -449,9 +451,17 @@ def coronavirus():
             WHERE county = :county AND state = :state""",
             {"county":item[0], "state":item[1]})
             cases = c.fetchall()
-            print(cases)
             if cases:    
                 conn.commit()
+
+                if item not in zillow_data:
+                    continue
+
+                for neighborhood, zillow_x, zillow_y in zillow_data[item]:
+                    # Plot Zillow data.
+                    label = "{}, {}".format(neighborhood, item[1])
+                    ax.plot(zillow_x, zillow_y, label=label, linewidth=0.5)
+
                 for data in cases:
                     try:
                         y.append(float(data[1]))   
@@ -462,20 +472,29 @@ def coronavirus():
                 x = [datetime.datetime.strptime(d,"%Y-%m-%d").date() for d in dates]
 
                 label = item[0] + ", " + item[1] + "(COVID)"
-                plt.plot(x, y, label=label)
+                ax2.plot(x, y, label=label, linewidth=2, linestyle='--')
                 covid_bool = True
 
-
         # naming the x axis 
-        plt.xlabel('Dates') 
+        ax.set_xlabel('Dates')
+        ax.set_xlim([datetime.date(2019, 10, 31), datetime.datetime.today()])
+
         # naming the y axis 
-        plt.ylabel('Average Cost of Home') 
+        ax.set_ylabel('Average Cost of Home') 
         
         # giving a title to my graph 
         plt.title("Comparison chart") 
 
         #legend
-        plt.legend(loc="best")
+        handles1, labels1 = ax.get_legend_handles_labels()
+        handles2, labels2 = ax2.get_legend_handles_labels()
+        handles = handles1 + handles2
+        labels = labels1 + labels2
+        plt.legend(handles, labels, loc="lower left", bbox_to_anchor=(-.1, -.404, 1.1, .102), ncol=2, mode="expand", borderaxespad=0., shadow=True)
+
+        plt.draw()
+
+        ax.set_xticklabels(ax.get_xticklabels(), rotation=45)
 
         #layout plot
         plt.tight_layout()

@@ -1,0 +1,54 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    COVID-19
+{% endblock %}
+
+{% block main %}
+<div>
+    <h3 class="text-center">
+        Select options from history to compare with COVID-19 data <br>
+        <small class="text-muted"> You must have viewed at least one neighborhood to use this tool. </small>
+    </h3>
+</div>
+<br>
+{% if not covid_bool %}
+<div class="alert alert-warning" role="alert">
+    A neighborhood that you selected does not have any COVID-19 data
+  </div>
+{% endif %}
+<br>
+<div class="container">
+    <div class="row justify-content-md-center">
+        <div class="col">
+            <form id="multiplot" action="/coronavirus" method="post">
+            <h5>Neighborhoods:</h5> <br>
+            {% for neighborhood in history_plots %}
+            <div class="form-check">
+                <input name="neighborhood" class="form-check-input" type="checkbox" value="{{ neighborhood }}" id="{{ neighborhood }}">
+                <label class="form-check-label" for="{{ neighborhood }}">
+                    {{ neighborhood }}
+                </label>
+            </div>
+            {% endfor %}
+            <br>
+            {% if history_plots %}
+            <button type="submit" class="btn btn-primary">Submit</button>
+            {% else %}
+            <h6 class="text-muted">Please select one or more neighborhoods from the home page</h6>
+            {% endif %}
+            </form>
+        </div>
+        <div class="col">
+            {% if current_plot != None %}
+            <img src="data:image/png;base64,{{ current_plot }}" alt="current plot">
+            {% elif history_plots %}
+            <img id="cheez" src="https://memegen.link/_aWNhbmhhcwljaG9vc2VfYV9uZWlnaGJvcmhvb2Qh.jpg" alt="choose data">    
+            {% else %}
+            <img src="https://memegen.link/_bm9pZGVhCV8vY2hvb3NlX3NvbWVfbmVpZ2hib3Job29kcyEJ.jpg" alt="input data">
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}
