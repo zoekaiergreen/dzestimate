@@ -44,6 +44,9 @@ main img
 {
     /* constrain images on small screens */
     max-width: 100%;
+    display:block;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 // Class
@@ -99,6 +102,6 @@ main img
 
 #cheez {
     margin: auto;
-    height:600px;
-    width:auto;
+    height:auto;
+    width:414px;
 }

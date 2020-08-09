@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 
 {% block title %}
-    Admin
+    Compare
 {% endblock %}
 
 {% block main %}
@@ -16,7 +16,7 @@
     <div class="row justify-content-md-center">
         <div class="col">
             <form id="multiplot" action="/compare" method="post">
-            <h5>Neighborhoods:</h5> <br>
+            <br><h5>Neighborhoods:</h5> <br>
             {% for neighborhood in history_plots %}
             <div class="form-check">
                 <input name="neighborhood" class="form-check-input" type="checkbox" value="{{ neighborhood }}" id="{{ neighborhood }}">
@@ -33,11 +33,13 @@
             {% endif %}
             </form>
         </div>
-        <div class="col-md-auto">
+        <div class="col">
             {% if current_plot != None %}
             <img src="data:image/png;base64,{{ current_plot }}" alt="current plot">
+            {% elif history_plots %}
+            <img id="cheez" src="https://memegen.link/_aWNhbmhhcwljaG9vc2VfYV9uZWlnaGJvcmhvb2Qh.jpg" alt="choose data">    
             {% else %}
-            <img src="https://memegen.link/_bm9pZGVhCV8vY2hvb3NlX3NvbWVfbmVpZ2hib3Job29kcyEJ.jpg" alt="choose data">
+            <img src="https://memegen.link/_bm9pZGVhCV8vY2hvb3NlX3NvbWVfbmVpZ2hib3Job29kcyEJ.jpg" alt="input data">
             {% endif %}
         </div>
     </div>

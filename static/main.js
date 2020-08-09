@@ -16,15 +16,18 @@ window.onload = function () {
             document.querySelector("#history_form").submit()
         }
     })
-    document.querySelector("#reset").onclick = function () {
-        function setVisible(selector, visible) {
-            document.querySelector(selector).style.display = visible ? 'block' : 'none';
-        }
-        setVisible('#loadertext', true);
-        setVisible('#loader', true);
-        setVisible('.page', false);
-        fetch("/resetdb", {method:'POST'})
-            .then(response => response.json())
+
+    let resetBtn = document.querySelector("#reset");
+    if (resetBtn) {
+        resetBtn.onclick = function () {
+            function setVisible(selector, visible) {
+                document.querySelector(selector).style.display = visible ? 'block' : 'none';
+            }
+            setVisible('#loadertext', true);
+            setVisible('#loader', true);
+            setVisible('.page', false);
+            fetch("/resetdb", { method: 'POST' })
+                .then(response => response.json())
                 .then(data => {
                     console.log(data)
                     setVisible('#loader', false);
@@ -32,6 +35,7 @@ window.onload = function () {
                     setVisible('#success', true);
                     setVisible('#loadertext', false);
                 });
+        }
     }
 }
 

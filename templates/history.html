@@ -5,10 +5,20 @@ History
 {% endblock %}
 
 {% block main %}
-
+<div>
+    <h3 class="text-center">
+        Select options from history to view <br>
+        <small class="text-muted"> You must have viewed at least one neighborhood to use this tool. </small>
+    </h3>
+</div>
+<br><br>
 <div class="container">
-    <div class="row justify-content-md-center align-items-center">
+    <div class="row justify-content-md-center">
         <div class="col">
+            <br>
+            {% if not history_plots %}
+            <h6 class="text-muted">Please select one or more neighborhoods from the home page</h6>
+            {% else %}
             <form id="history_form" action="/history" method="post">
                 <select name="history_location" id="history_location" class="form-control btn btn-secondary dropdown-toggle"
                     id="exampleFormControlSelect1">
@@ -18,12 +28,13 @@ History
                     {% endfor %}
                 </select>
             </form>
+            {% endif %}
         </div>
-        <div class="col-md-auto">
+        <div class="col">
             {% if current_plot != None %}
             <img src="data:image/png;base64,{{ current_plot }}" alt="current plot">
             {% elif history_plots %}
-            <img id="cheez" src="https://memegen.link/_aWNhbmhhcwlfL2Nob29zZV9hX25laWdoYm9yaG9vZCEJ.jpg" alt="choose data">    
+            <img id="cheez" src="https://memegen.link/_aWNhbmhhcwljaG9vc2VfYV9uZWlnaGJvcmhvb2Qh.jpg" alt="choose data">    
             {% else %}
             <img src="https://memegen.link/_bm9pZGVhCV8vY2hvb3NlX3NvbWVfbmVpZ2hib3Job29kcyEJ.jpg" alt="input data">
             {% endif %}
